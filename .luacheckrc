@@ -1,12 +1,23 @@
 std = "lua51"
 
 globals = {
-   "GetMoney",
-   "CreateFrame",
-   "GetCoinTextureString",
-   "print"
+    -- Frame e UI
+    "CreateFrame",
+    "UIParent",
+
+    -- Dinheiro
+    "GetMoney",
+    "GetCoinTextureString",
+
+    -- Eventos e sistema
+    "print",
+    "math",
+    "string",
+    "table",
+
+    -- Player
+    "UnitName",
+    "UnitClass",
 }
 
-ignore = {
-   "111" -- undefined global
-}
+-- Sem ignore aqui — deixa o luacheck trabalhar!
