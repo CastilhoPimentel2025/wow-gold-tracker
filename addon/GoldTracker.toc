@@ -1,0 +1,8 @@
+## Interface: 100207
+## Title: GoldTracker
+## Notes: Tracks gold earned per session
+## Author: Leonardo
+## Version: 1.0.0
+
+GoldTracker.lua
+modules/tracker.lua
