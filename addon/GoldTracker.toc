@@ -4,6 +4,7 @@
 ## Author: Leonardo
 ## Version: 1.0.0
 ## SavedVariables: GoldTrackerDB
+## X-Curse-Project-ID: 1501932
 
 GoldTracker.lua
 modules/tracker.lua
