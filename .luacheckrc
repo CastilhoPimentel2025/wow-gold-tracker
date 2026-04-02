@@ -8,6 +8,5 @@ globals = {
 }
 
 ignore = {
-   "111", -- undefined global
+   "111" -- undefined global
 }
-####
