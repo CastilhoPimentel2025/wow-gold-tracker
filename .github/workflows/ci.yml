@@ -17,9 +17,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Build Docker image
-        run: docker build -t addon-ci .
+        run: docker build --no-cache -t addon-ci .
 
       - name: Run LuaCheck
         run: docker run addon-ci
