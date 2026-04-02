@@ -1,11 +1,10 @@
-local GoldTracker = {}
 local startGold = 0
 
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("PLAYER_LOGIN")
 frame:RegisterEvent("PLAYER_MONEY")
 
-frame:SetScript("OnEvent", function(self, event)
+frame:SetScript("OnEvent", function(_, event)
     if event == "PLAYER_LOGIN" then
         startGold = GetMoney()
 
