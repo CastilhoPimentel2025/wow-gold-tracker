@@ -1,5 +1,5 @@
 local startGold = 0
-local sessionStart = time()
+local sessionStart = 0
 
 -- Janela principal
 local window = CreateFrame("Frame", "GoldTrackerWindow", UIParent)
