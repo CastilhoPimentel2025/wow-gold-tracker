@@ -1,3 +1,9 @@
 package-as: GoldTracker
+ignore:
+  - .github
+  - scripts
+  - testes
+  - Dockerfile
+  - .luacheckrc
 move-folders:
-  addon/: GoldTracker/
+  addon: GoldTracker

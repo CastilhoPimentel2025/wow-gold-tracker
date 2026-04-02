@@ -38,4 +38,4 @@ jobs:
           CF_API_KEY: ${{ secrets.CF_API_TOKEN }}
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
         with:
-          args: -g retail
+          args: -g retail -t ${{ github.ref_name }} -r .
