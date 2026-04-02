@@ -7,10 +7,12 @@ window:SetSize(220, 120)
 window:SetPoint("CENTER")
 window:SetMovable(true)
 window:EnableMouse(true)
+window:SetClampedToScreen(true)
 window:RegisterForDrag("LeftButton")
-window:SetScript("OnDragStart", window.StartMoving)
-window:SetScript("OnDragStop", window.StopMovingOrSizing)
+window:SetScript("OnDragStart", function(self) self:StartMoving() end)
+window:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 window:SetFrameStrata("MEDIUM")
+
 
 -- Fundo
 local bg = window:CreateTexture(nil, "BACKGROUND")
@@ -83,6 +85,7 @@ frame:SetScript("OnEvent", function(_, event)
             sessionStart = time()
             updateDisplay()
         end
+        window:Show() -- ✅ adiciona essa linha
     elseif event == "PLAYER_MONEY" then
         updateDisplay()
     end
