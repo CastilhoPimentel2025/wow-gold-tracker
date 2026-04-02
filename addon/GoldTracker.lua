@@ -1,5 +1,7 @@
-local startGold = 0
 local sessionStart = 0
+local totalEarned = 0
+local totalSpent = 0
+local lastGold = 0
 
 -- Janela principal
 local window = CreateFrame("Frame", "GoldTrackerWindow", UIParent)
@@ -16,17 +18,17 @@ window:SetFrameStrata("MEDIUM")
 -- Fundo
 local bg = window:CreateTexture(nil, "BACKGROUND")
 bg:SetAllPoints()
-bg:SetColorTexture(0, 0, 0, 0.8)
+bg:SetColorTexture(0.15, 0.15, 0.15, 0.9)
 
--- Borda dourada
+-- Borda cinza
 local border = window:CreateTexture(nil, "BORDER")
 border:SetAllPoints()
-border:SetColorTexture(1, 0.8, 0, 0.6)
+border:SetColorTexture(0.4, 0.4, 0.4, 1)
 
 local inner = window:CreateTexture(nil, "BACKGROUND")
 inner:SetPoint("TOPLEFT", 1, -1)
 inner:SetPoint("BOTTOMRIGHT", -1, 1)
-inner:SetColorTexture(0, 0, 0, 0.85)
+inner:SetColorTexture(0.15, 0.15, 0.15, 0.95)
 
 -- Título
 local title = window:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
@@ -35,7 +37,7 @@ title:SetText("|cffffd700GoldTracker|r")
 
 -- Linhas de texto
 local function createLine(offsetY)
-    local line = window:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    local line = window:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     line:SetPoint("TOPLEFT", 10, offsetY)
     line:SetWidth(200)
     line:SetJustifyH("LEFT")
@@ -50,25 +52,38 @@ local linePHora = createLine(-72)
 -- Atualiza a janela
 local function updateDisplay()
     local currentGold = GetMoney()
-    local earned      = currentGold - startGold
     local elapsed     = math.max(time() - sessionStart, 1)
-    local perHour     = math.floor(earned / elapsed * 3600)
+    local perHour     = math.floor(totalEarned / elapsed * 3600)
 
     lineAtual:SetText("Atual:  " .. GetCoinTextureString(currentGold))
-
-    if earned >= 0 then
-        lineGanho:SetText("|cff00ff00Ganho:  " .. GetCoinTextureString(earned) .. "|r")
-        lineGasto:SetText("|cffff0000Gasto:  " .. GetCoinTextureString(0) .. "|r")
-    else
-        lineGanho:SetText("|cff00ff00Ganho:  " .. GetCoinTextureString(0) .. "|r")
-        lineGasto:SetText("|cffff0000Gasto:  " .. GetCoinTextureString(math.abs(earned)) .. "|r")
-    end
+    lineGanho:SetText("|cff00ff00Ganho:  " .. GetCoinTextureString(totalEarned) .. "|r")
+    lineGasto:SetText("|cffff0000Gasto:  " .. GetCoinTextureString(totalSpent) .. "|r")
 
     if perHour >= 0 then
-        linePHora:SetText("|cffffff00/hora: " .. GetCoinTextureString(perHour) .. "|r")
+        linePHora:SetText("|cffffff00Por hora: " .. GetCoinTextureString(perHour) .. "|r")
     else
-        linePHora:SetText("|cffffff00/hora: -" .. GetCoinTextureString(math.abs(perHour)) .. "|r")
+        linePHora:SetText("|cffffff00Por hora: -" .. GetCoinTextureString(math.abs(perHour)) .. "|r")
     end
+end
+
+-- Inicializa o banco de dados
+local function initDB()
+    if not GoldTrackerDB then
+        GoldTrackerDB = {
+            totalEarned = 0,
+            totalSpent  = 0,
+        }
+    end
+
+    -- Carrega os dados salvos
+    totalEarned = GoldTrackerDB.totalEarned
+    totalSpent  = GoldTrackerDB.totalSpent
+end
+
+-- Salva no banco de dados
+local function saveDB()
+    GoldTrackerDB.totalEarned = totalEarned
+    GoldTrackerDB.totalSpent  = totalSpent
 end
 
 -- Eventos
@@ -76,25 +91,48 @@ local frame = CreateFrame("Frame")
 frame:RegisterEvent("PLAYER_LOGIN")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:RegisterEvent("PLAYER_MONEY")
+frame:RegisterEvent("PLAYER_LOGOUT")
 
 frame:SetScript("OnEvent", function(_, event)
-    print("[GoldTracker] evento: " .. event)
-    if event == "PLAYER_LOGIN" or event == "PLAYER_ENTERING_WORLD" then
-        if startGold == 0 then
-            startGold    = GetMoney()
-            sessionStart = time()
-            updateDisplay()
-        end
-        window:Show()
-    elseif event == "PLAYER_MONEY" then
+    if event == "PLAYER_LOGIN" then
+        initDB()
+        lastGold     = GetMoney()
+        sessionStart = time()
         updateDisplay()
+
+    elseif event == "PLAYER_ENTERING_WORLD" then
+        window:Show()
+
+    elseif event == "PLAYER_MONEY" then
+        local currentGold = GetMoney()
+        local diff = currentGold - lastGold
+
+        if diff > 0 then
+            totalEarned = totalEarned + diff
+        else
+            totalSpent = totalSpent + math.abs(diff)
+        end
+
+        lastGold = currentGold
+        saveDB()
+        updateDisplay()
+
+    elseif event == "PLAYER_LOGOUT" then
+        saveDB()
     end
 end)
 
 -- Comando para mostrar/esconder
 SLASH_GOLDTRACKER1 = "/gold"
-SlashCmdList["GOLDTRACKER"] = function()
-    if window:IsShown() then
+SlashCmdList["GOLDTRACKER"] = function(msg)
+    if msg == "reset" then
+        GoldTrackerDB.totalEarned = 0
+        GoldTrackerDB.totalSpent  = 0
+        totalEarned = 0
+        totalSpent  = 0
+        print("|cffffd700[GoldTracker]|r Dados resetados!")
+        updateDisplay()
+    elseif window:IsShown() then
         window:Hide()
     else
         window:Show()

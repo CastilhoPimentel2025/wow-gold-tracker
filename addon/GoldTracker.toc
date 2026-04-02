@@ -1,8 +1,8 @@
-## Interface: 110000
+## Interface: 120001
 ## Title: GoldTracker
 ## Notes: Tracks gold earned per session
 ## Author: Leonardo
 ## Version: 1.0.0
+## SavedVariables: GoldTrackerDB
 
 GoldTracker.lua
-modules/tracker.lua
