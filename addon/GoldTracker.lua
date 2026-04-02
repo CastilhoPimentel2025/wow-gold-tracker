@@ -97,8 +97,5 @@ SlashCmdList["GOLDTRACKER"] = function()
         window:Show()
     end
 end
-```
 
-Também atualiza o `.toc` para refletir a versão correta do Retail:
-```
 ## Interface: 120001
