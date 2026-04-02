@@ -2,7 +2,7 @@ local startGold = 0
 local sessionStart = time()
 
 -- Janela principal
-local window = CreateFrame("Frame", "GoldTrackerWindow", UIParent, "BackdropTemplate")
+local window = CreateFrame("Frame", "GoldTrackerWindow", UIParent)
 window:SetSize(220, 120)
 window:SetPoint("CENTER")
 window:SetMovable(true)
@@ -10,14 +10,22 @@ window:EnableMouse(true)
 window:RegisterForDrag("LeftButton")
 window:SetScript("OnDragStart", window.StartMoving)
 window:SetScript("OnDragStop", window.StopMovingOrSizing)
-window:SetBackdrop({
-    bgFile   = "Interface/Tooltips/UI-Tooltip-Background",
-    edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
-    edgeSize = 16,
-    insets   = { left = 4, right = 4, top = 4, bottom = 4 },
-})
-window:SetBackdropColor(0, 0, 0, 0.8)
-window:SetBackdropBorderColor(1, 0.8, 0, 1)
+window:SetFrameStrata("MEDIUM")
+
+-- Fundo
+local bg = window:CreateTexture(nil, "BACKGROUND")
+bg:SetAllPoints()
+bg:SetColorTexture(0, 0, 0, 0.8)
+
+-- Borda dourada
+local border = window:CreateTexture(nil, "BORDER")
+border:SetAllPoints()
+border:SetColorTexture(1, 0.8, 0, 0.6)
+
+local inner = window:CreateTexture(nil, "BACKGROUND")
+inner:SetPoint("TOPLEFT", 1, -1)
+inner:SetPoint("BOTTOMRIGHT", -1, 1)
+inner:SetColorTexture(0, 0, 0, 0.85)
 
 -- Título
 local title = window:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
@@ -25,7 +33,7 @@ title:SetPoint("TOP", 0, -8)
 title:SetText("|cffffd700GoldTracker|r")
 
 -- Linhas de texto
-local function createLine(_, offsetY)
+local function createLine(offsetY)
     local line = window:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     line:SetPoint("TOPLEFT", 10, offsetY)
     line:SetWidth(200)
@@ -33,10 +41,10 @@ local function createLine(_, offsetY)
     return line
 end
 
-local lineAtual = createLine(window, -24)
-local lineGanho = createLine(window, -40)
-local lineGasto = createLine(window, -56)
-local linePHora = createLine(window, -72)
+local lineAtual = createLine(-24)
+local lineGanho = createLine(-40)
+local lineGasto = createLine(-56)
+local linePHora = createLine(-72)
 
 -- Atualiza a janela
 local function updateDisplay()
@@ -89,3 +97,8 @@ SlashCmdList["GOLDTRACKER"] = function()
         window:Show()
     end
 end
+```
+
+Também atualiza o `.toc` para refletir a versão correta do Retail:
+```
+## Interface: 120001
