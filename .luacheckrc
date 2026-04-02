@@ -9,15 +9,14 @@ globals = {
     "GetMoney",
     "GetCoinTextureString",
 
-    -- Eventos e sistema
+    -- Slash commands
+    "SlashCmdList",
+    "SLASH_GOLDTRACKER1",
+
+    -- Sistema
     "print",
     "math",
     "string",
     "table",
-
-    -- Player
-    "UnitName",
-    "UnitClass",
+    "time",
 }
-
--- Sem ignore aqui — deixa o luacheck trabalhar!
