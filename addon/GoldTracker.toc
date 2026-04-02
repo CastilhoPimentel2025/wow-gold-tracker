@@ -6,3 +6,4 @@
 ## SavedVariables: GoldTrackerDB
 
 GoldTracker.lua
+modules/tracker.lua

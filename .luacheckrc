@@ -6,6 +6,8 @@ globals = {
     "SlashCmdList",
     "SLASH_GOLDTRACKER1",
     "GoldTrackerDB",
+    "GoldTrackerHistory",
+    "date",
     "print",
     "math",
     "string",
