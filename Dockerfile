@@ -15,4 +15,4 @@ WORKDIR /app
 
 COPY . .
 
-CMD ["luacheck", "addon"]
+CMD ["luacheck", "."]
