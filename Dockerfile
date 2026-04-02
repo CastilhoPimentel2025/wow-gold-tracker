@@ -1,12 +1,15 @@
-FROM alpine:latest
+FROM ubuntu:22.04
 
-RUN apk add --no-cache \
-    lua5.1 \
-    luarocks \
-    zip \
-    bash
-
-RUN luarocks install luacheck
+RUN apt-get update && \
+    apt-get install -y \
+        lua5.1 \
+        luarocks \
+        zip \
+        bash \
+        git \
+        wget \
+        unzip && \
+    luarocks install luacheck
 
 WORKDIR /app
 
