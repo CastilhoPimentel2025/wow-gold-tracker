@@ -5,5 +5,4 @@ ignore:
   - testes
   - Dockerfile
   - .luacheckrc
-move-folders:
-  addon: GoldTracker
+  - .pkgmeta
