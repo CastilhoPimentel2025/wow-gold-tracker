@@ -13,7 +13,6 @@ window:SetScript("OnDragStart", function(self) self:StartMoving() end)
 window:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 window:SetFrameStrata("MEDIUM")
 
-
 -- Fundo
 local bg = window:CreateTexture(nil, "BACKGROUND")
 bg:SetAllPoints()
@@ -79,13 +78,14 @@ frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:RegisterEvent("PLAYER_MONEY")
 
 frame:SetScript("OnEvent", function(_, event)
+    print("[GoldTracker] evento: " .. event)
     if event == "PLAYER_LOGIN" or event == "PLAYER_ENTERING_WORLD" then
         if startGold == 0 then
             startGold    = GetMoney()
             sessionStart = time()
             updateDisplay()
         end
-        window:Show() -- ✅ adiciona essa linha
+        window:Show()
     elseif event == "PLAYER_MONEY" then
         updateDisplay()
     end
