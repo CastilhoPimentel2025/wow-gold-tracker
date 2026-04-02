@@ -97,5 +97,3 @@ SlashCmdList["GOLDTRACKER"] = function()
         window:Show()
     end
 end
-
-## Interface: 120001
