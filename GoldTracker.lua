@@ -5,7 +5,7 @@ local lastGold = 0
 local historyVisible = false
 
 -- Janela principal
-local window = CreateFrame("Frame", "GoldTrackerWindow", UIParent)
+local window = CreateFrame("Frame", "GoldTrackerWindow", UIParent, "BackdropTemplate")
 window:SetSize(220, 120)
 window:SetPoint("CENTER")
 window:SetMovable(true)
@@ -13,28 +13,65 @@ window:EnableMouse(true)
 window:SetClampedToScreen(true)
 window:RegisterForDrag("LeftButton")
 window:SetScript("OnDragStart", function(self) self:StartMoving() end)
-window:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
+window:SetScript("OnDragStop", function(self)
+    self:StopMovingOrSizing()
+
+    local point, _, _, x, y = self:GetPoint()
+
+    GoldTrackerDB.windowPosition = {
+        point = point,
+        x = x,
+        y = y
+    }
+end)
 window:SetFrameStrata("MEDIUM")
+-- Restaurar posição salva
+if GoldTrackerDB and GoldTrackerDB.windowPosition then
+    local pos = GoldTrackerDB.windowPosition
 
--- Fundo
-local bg = window:CreateTexture(nil, "BACKGROUND")
-bg:SetAllPoints()
-bg:SetColorTexture(0.15, 0.15, 0.15, 0.9)
+    window:ClearAllPoints()
+    window:SetPoint(
+        pos.point,
+        UIParent,
+        pos.point,
+        pos.x,
+        pos.y
+    )
+end
+-- Botão fechar padrão do WoW
+local closeBtn = CreateFrame(
+    "Button",
+    nil,
+    window,
+    "UIPanelCloseButton"
+)
 
--- Borda cinza
-local border = window:CreateTexture(nil, "BORDER")
-border:SetAllPoints()
-border:SetColorTexture(0.4, 0.4, 0.4, 1)
+closeBtn:SetPoint("TOPRIGHT", 0, 0)
 
-local inner = window:CreateTexture(nil, "BACKGROUND")
-inner:SetPoint("TOPLEFT", 1, -1)
-inner:SetPoint("BOTTOMRIGHT", -1, 1)
-inner:SetColorTexture(0.15, 0.15, 0.15, 0.95)
+-- Fundo estilo WoW
+window:SetBackdrop({
+    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+    tile = true,
+    tileSize = 32,
+    edgeSize = 16,
+    insets = {
+        left = 4,
+        right = 4,
+        top = 4,
+        bottom = 4
+    }
+})
+
+-- Transparência leve
+window:SetBackdropColor(0, 0, 0, 0.8)
 
 -- Título
 local title = window:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 title:SetPoint("TOP", 0, -8)
-title:SetText("|cffffd700GoldTracker|r")
+title:SetFontObject("GameFontHighlight")
+title:SetText("|TInterface\\MoneyFrame\\UI-GoldIcon:16:16|t |cffffd700GoldTracker|r")
+title:SetShadowOffset(1, -1)
 
 -- Botão de histórico
 local histBtn = CreateFrame("Button", nil, window)
@@ -42,7 +79,7 @@ histBtn:SetSize(16, 16)
 histBtn:SetPoint("TOPRIGHT", -6, -6)
 local histBtnText = histBtn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 histBtnText:SetAllPoints()
-histBtnText:SetText("|cffaaaaaa▼|r")
+histBtnText:SetText("|cffffd700≡|r")
 
 -- Linhas principais
 local function createLine(offsetY)
@@ -101,8 +138,8 @@ local function updateDisplay()
     local currentGold = GetMoney()
 
     lineAtual:SetText("Atual:  " .. GetCoinTextureString(currentGold))
-    lineGanho:SetText("|cff00ff00Ganho:  " .. GetCoinTextureString(totalEarned) .. "|r")
-    lineGasto:SetText("|cffff0000Gasto:  " .. GetCoinTextureString(totalSpent) .. "|r")
+    lineGanho:SetText("|cff00ff00Ganho: |r" ..GetCoinTextureString(totalEarned))
+    lineGasto:SetText("|cffff0000Spent: |r" ..GetCoinTextureString(totalSpent))
 
 end
 -- Toggle histórico

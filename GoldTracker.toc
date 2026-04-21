@@ -5,6 +5,7 @@
 ## Version: 1.0.0
 ## SavedVariables: GoldTrackerDB
 ## X-Curse-Project-ID: 1501932
+## SavedVariables: GoldTrackerDB
 
 GoldTracker.lua
 modules/tracker.lua
