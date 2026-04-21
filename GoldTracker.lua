@@ -104,7 +104,7 @@ local function updateDisplay()
     lineGanho:SetText("|cff00ff00Ganho:  " .. GetCoinTextureString(totalEarned) .. "|r")
     lineGasto:SetText("|cffff0000Gasto:  " .. GetCoinTextureString(totalSpent) .. "|r")
 
-
+end
 -- Toggle histórico
 histBtn:SetScript("OnClick", function()
     historyVisible = not historyVisible
