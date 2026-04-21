@@ -56,7 +56,6 @@ end
 local lineAtual = createLine(-24)
 local lineGanho = createLine(-40)
 local lineGasto = createLine(-56)
-local linePHora = createLine(-72)
 
 -- Linhas do histórico (5 sessões x 2 linhas cada)
 local histLines = {}
@@ -100,19 +99,11 @@ end
 -- Atualiza a janela principal
 local function updateDisplay()
     local currentGold = GetMoney()
-    local elapsed     = math.max(time() - sessionStart, 1)
-    local perHour     = math.floor(totalEarned / elapsed * 3600)
 
     lineAtual:SetText("Atual:  " .. GetCoinTextureString(currentGold))
     lineGanho:SetText("|cff00ff00Ganho:  " .. GetCoinTextureString(totalEarned) .. "|r")
     lineGasto:SetText("|cffff0000Gasto:  " .. GetCoinTextureString(totalSpent) .. "|r")
 
-    if perHour >= 0 then
-        linePHora:SetText("|cffffff00Por hora: " .. GetCoinTextureString(perHour) .. "|r")
-    else
-        linePHora:SetText("|cffffff00Por hora: -" .. GetCoinTextureString(math.abs(perHour)) .. "|r")
-    end
-end
 
 -- Toggle histórico
 histBtn:SetScript("OnClick", function()
@@ -122,7 +113,7 @@ histBtn:SetScript("OnClick", function()
         histBtnText:SetText("|cffaaaaaa▲|r")
         updateHistory()
     else
-        window:SetSize(220, 120)
+        window:SetSize(220, 100)
         histBtnText:SetText("|cffaaaaaa▼|r")
         for i = 1, 5 do
             histLines[i].header:Hide()
